@@ -1,0 +1,65 @@
+Redis (; Remote Dictionary Server) is an open-source in-memory storage, used as a distributed, in-memory key–value database, cache and message broker, with optional durability. Because it holds all data in memory and because of its design, Redis offers low-latency reads and writes, making it particularly suitable for use cases that require a cache. Redis is the most popular NoSQL database, and one of the most popular databases overall. Redis is used in companies like Twitter, Airbnb, Tinder, Yahoo, Adobe, Hulu, Amazon and OpenAi.Redis supports different kinds of abstract data structures, such as strings, lists, maps, sets, sorted sets, HyperLogLogs, bitmaps, streams, and spatial indices. 
+The project was developed and maintained by Salvatore Sanfilippo, starting in 2009. From 2015 until 2020, he led a project core team sponsored by Redis Labs. Salvatore Sanfilippo left Redis as the maintainer in 2020. In 2021 Redis Labs dropped the Labs from its name and now is known simply as "Redis".Redis is released under a BSD 3-clause license.
+
+History
+The name Redis means Remote Dictionary Server. The Redis project began when Salvatore Sanfilippo, nicknamed antirez, the original developer of Redis, was trying to improve the scalability of his Italian startup, developing a real-time web log analyzer. After encountering significant problems in scaling some types of workloads using traditional database systems, Sanfilippo began in 2009 to prototype a first proof of concept version of Redis in Tcl. Later Sanfilippo translated that prototype to the C language and implemented the first data type, the list. After a few weeks of using the project internally with success, Sanfilippo decided to open source it, announcing the project on Hacker News. The project began to get traction, particularly among the Ruby community, with GitHub and Instagram being among the first companies adopting it.Sanfilippo was hired by VMware in March, 2010.In May, 2013, Redis was sponsored by Pivotal Software (a VMware spin-off).In June 2015, development became sponsored by Redis Labs.In October 2018, Redis 5.0 was released, introducing Redis Stream – a new data structure that allows storage of multiple fields and string values with an automatic, time-based sequence at a single key.In June 2020, Salvatore Sanfilippo stepped down as Redis maintainer.
+
+Differences from other database systems
+Redis popularized the idea of a system that can be considered a store and a cache at the same time. It was designed so that data is always modified and read from the main computer memory, but also stored on disk in a format that is unsuitable for random data access. The formatted data is only reconstructed into memory once the system restarts. 
+Redis also provides a data model that is very unusual compared to a relational database management system (RDBMS). User commands do not describe a query to be executed by the database engine but rather specific operations that are performed on given abstract data types. Therefore data must be stored in a way which is suitable later for fast retrieval. The retrieval is done without help from the database system in form of secondary indexes, aggregations or other common features of traditional RDBMS. The Redis implementation makes heavy use of the fork system call, to duplicate the process holding the data, so that the parent process continues to serve clients while the child process creates an in-memory copy of the data on disk.
+
+Popularity
+According to monthly DB-Engines rankings, Redis is often the most popular key–value database. Redis has also been ranked the #4 NoSQL database in user satisfaction and market presence based on user reviews, the most popular NoSQL database in containers, and the #4 Data store of 2019 by ranking website stackshare.io. It was voted most loved database in the Stack Overflow Developer Survey in 2017, 2018, 2019, 2020 and 2021.
+
+Supported languages
+Since version 2.6, Redis features server-side scripting in the language Lua.Many programming languages have Redis language bindings on the client side, including: ActionScript, C, C++, C#, Chicken, Clojure, Common Lisp, Crystal, D, Dart, Delphi, Elixir, Erlang, Go, Haskell, Haxe, Io, Java, Nim, JavaScript (Node.js), Julia, Lua, Objective-C, OCaml, Perl, PHP, Pure Data, Python, R, Racket, Ruby, Rust, Scala, Smalltalk, Swift, and Tcl. Several client software programs exist in these languages.
+
+Data types
+Redis maps keys to types of values. An important difference between Redis and other structured storage systems is that Redis supports not only strings, but also abstract data types:
+
+Lists of strings
+Sets of strings (collections of non-repeating unsorted elements)
+Sorted sets of strings (collections of non-repeating elements ordered by a floating-point number called score)
+Hash tables where keys and values are strings
+HyperLogLogs used for approximated set cardinality size estimation, available since Redis 2.8.9 in April 2014.
+Stream of entries with consumer groups, allows you to store multiple fields and string values with an automatic, time-based sequence at a single key, available since Redis 5.0 in October 2018
+Geospatial data through the implementation of the geohash technique, available since Redis 3.2.The type of a value determines what operations (called commands) are available for the value. Redis supports high-level, atomic, server-side operations like intersection, union, and difference between sets and sorting of lists, sets and sorted sets.
+More data types are supported based on Redis Modules API. Note, that some of them are dual licensed, and not under the BSD 3 clause:
+JSON – RedisJSON implements ECMA-404 (the JavaScript Object Notation Data Interchange Standard) as a native data type.
+Search - A query engine for Redis, providing secondary indexing, full-text search, vector similarity search and aggregations.
+Time series – RedisTimeSeries implements a time series data structure
+Bloom filter, Cuckoo filter, Count–min sketch, and Top-K – RedisBloom implements a set of probabilistic data structures for Redis
+Others Former implementations include: 
+
+Graph – RedisGraph implements a queryable property graph
+RedisGraph has been discontinued, and continued in the form of a fork called FalkorDB.
+
+Persistence
+Redis typically holds the whole dataset in memory. Versions up to 2.4 could be configured to use what they refer to as virtual memory in which some of the dataset is stored on disk, but this feature is deprecated. Persistence in Redis can be achieved through two different methods. First by snapshotting, where the dataset is asynchronously transferred from memory to disk at regular intervals as a binary dump, using the Redis RDB Dump File Format. Alternatively by journaling, where a record of each operation that modifies the dataset is added to an append-only file (AOF) in a background process. Redis can rewrite the append-only file in the background to avoid an indefinite growth of the journal. Journaling was introduced in version 1.1 and is generally considered the safer approach.
+By default, Redis writes data to a file system at least every 2 seconds, with more or less robust options available if needed. In the case of a complete system failure on default settings, only a few seconds of data would be lost.
+
+Replication
+Redis supports master–replica replication. Data from any Redis server can replicate to any number of replicas. A replica may be a master to another replica. This allows Redis to implement a single-rooted replication tree. Redis replicas can be configured to accept writes, permitting intentional and unintentional inconsistency between instances. The publish–subscribe feature is fully implemented, so a client of a replica may subscribe to a channel and receive a full feed of messages published to the master, anywhere up the replication tree. Replication is useful for read (but not write) scalability or data redundancy.
+
+Performance
+When the durability of data is not needed, the in-memory nature of Redis allows it to perform well compared to database systems that write every change to disk before considering a transaction committed. Redis operates as a single process and is single-threaded or double-threaded when it rewrites the AOF (append-only file). Thus, a single Redis instance cannot use parallel execution of tasks such as stored procedures.
+
+Clustering
+Redis introduced clustering in April 2015 with the release of version 3.0. The cluster specification implements a subset of Redis commands: all single-key commands are available, multi-key operations (commands related to unions and intersections) are restricted to keys belonging to the same node, and commands related to database selection operations are unavailable. A Redis cluster can scale up to 1,000 nodes, achieve "acceptable" write safety and to continue operations when some nodes fail.
+
+Use cases
+Due to the nature of the database design, typical use cases are session caching, full page cache, message queue applications, leaderboards and counting among others. The publish–subscribe messaging paradigm allows real-time communication between servers. 
+Amazon Web Services offers a managed Redis service called ElastiCache for Redis, Google offers a managed Redis service called Cloud Memorystore, Microsoft offers Azure Cache for Redis in Azure, and Alibaba offers ApsaraDB for Redis in Alibaba Cloud.
+
+Users
+Redis is being used in companies like Twitter, AirBnB, Tinder, Yahoo, Adobe, Hulu, and Amazon.
+
+See also
+Conflict-free replicated data type
+Memcached
+Infinispan
+
+References
+Further reading
+External links
+Official website
